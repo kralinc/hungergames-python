@@ -1,6 +1,4 @@
 #The Hunger Games
-
-#TODO: more commenting
 from math import ceil
 import random
 
@@ -26,11 +24,17 @@ class Tribute:
             self.hisher = "his"
             self.himher = "him"
             self.heshe = "he"
-        else:
+        elif self.gender.lower() == "f":
             #give her female pronouns
             self.hisher = "her"
             self.himher = "her"
             self.heshe = "she"
+        else:
+            #give them nonbinary pronouns
+            #you friggin sjvv ree
+            self.hisher = "their"
+            self.himer = "them"
+            self.heshe = "they"
 
 def initialize():
     global tributes, numOfDistricts
@@ -70,7 +74,7 @@ def pickRandomAction(tribute1, tribute2):
     #We get a random number, between 0 and however many scenarios I've created.
     #It then runs whatever scenario it lands on. Some of these have multiple layers.
     #There's also a few easter eggs.
-    num = random.randint(0,32)
+    num = random.randint(0,41)
 
     if num == 0:
         print("{} picks flowers".format(t1))
@@ -252,12 +256,37 @@ def pickRandomAction(tribute1, tribute2):
         else:
             print ("{} shoots a squirrel for food.".format(t1))
 
+    elif num == 33:
+        print ("{} punches a leaf".format(t1))
+    elif num == 34:
+        print ("{} pisses in a bush".format(t1))
+    elif num == 35:
+        print ("{} looks desparately around for something to eat".format(t1))
+    elif num == 36:
+        temp = random.randint(0, 300)
+
+        if temp == 300:
+            print ("{} and {} have hot, steamy, sweaty sex".format(t1, t2))
+        else:
+            print ("{} practices stabbing on a dead squirrel".format(t1))
+    elif num == 37:
+        print ("{} trips a tripwire and gets shot in the arm with an arrow".format(t1))
+        tribute1.inj = True
+    elif num == 38:
+        print ("{} does some exploring".format(t1))
+    elif num == 39:
+        print ("{} and {} sing songs together".format(t1, t2))
+    elif num == 40:
+        print("{} tries to eat tree bark".format(t1))
+    elif num == 41:
+        print ("{} smacks {} with a yard stick".format(t1, t2))
+               
 def pickRandomNightAction(tribute1, tribute2):
     #This is the same as pickRandomAction(), just with a different scenario set.
     global tributes, dead, deadthisday
     t1 = tribute1.name
     t2 = tribute2.name
-    num = random.randint(0,20)
+    num = random.randint(0,26)
     tribute1.asleep = False
 
     if num == 0:
@@ -366,6 +395,22 @@ def pickRandomNightAction(tribute1, tribute2):
         print ("{} stares at the night sky.".format(t1))
     elif num == 20:
         print ("{} imagines a world where anyone can be anything.".format(t1))
+    elif num == 21:
+        print ("{} falls asleep near a bush".format(t1))
+        tribute1.asleep = True
+    elif num == 22:
+        print ("{} struggles to fall asleep, but manages in the end.".format(t1))
+        tribute1.asleep = True
+    elif num == 23:
+        print ("{} lays down with {} eyes wide open".format(t1, tribute1.hisher))
+    elif num == 24:
+        print("{} has nightmares ".format(t1))
+        tribute1.asleep = True
+    elif num == 25:
+        print ("{} makes a bed out of some grass".format(t1))
+        tribute1.asleep = True
+    elif num == 26:
+        print ("{} keeps watch in a tree".format(t1))
         
 #============================================================================
         
@@ -416,25 +461,31 @@ def Cannons():
 #===========================================================================
 
 initialize()
-while len(tributes) != 1:
-    Day()
-    input()
-    if len(tributes) == 1:
-        break
-    Night()
-    Cannons()
+while len(tributes) != 1: #As long as there is more than 1 tribute remaining
+    Day() #Start a new day
+    input() 
+    if len(tributes) == 1: #If there is only 1 tribute left
+        break #Break the cycle, move on
+    Night() #Otherwise go on to night
+    Cannons() #List all the tributes who died
     input()
 print ("{} from District {} survived the Hunger Games!".format(tributes[0].name, tributes[0].district))
 input()
+
 print ("Order of death\n")
-for i in range(len(dead)):
-    print ("{}: {}".format((numOfDistricts*2)-i, dead[i].name))
+for i in range(len(dead)): #For each dead tribute
+    print ("{}: {}".format((numOfDistricts*2)-i, dead[i].name)) #List the name and time of death of the tribute.
+    #Explanation of (numOfDistricts*2)-i
+    #numOfDistricts is the number of districts in the game.
+    #Since this is player defined we need a formula to find last place. It isn't necessarily 12.
+    #So The total number of districts is last place. Then it multiplies it by 2 to get the number of tributes.
+    # i is the current position of this function in the array. The farther along it is, the higher the position of the tribute, so the position and ranking have an inverse relationship.
 input()
 print ("Kills\n")
-for i in range(len(dead)):
-    tributes.append(dead[i])
+for i in range(len(dead)): #For each dead tribute
+    tributes.append(dead[i]) 
 
-#Sort the tributes bu number of kills
+#Sort the tributes by number of kills
 killorder = []
 while len(killorder) < (numOfDistricts * 2):
     highest = 0
