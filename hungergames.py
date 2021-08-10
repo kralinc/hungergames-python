@@ -30,21 +30,38 @@ class Tribute:
             self.himher = "her"
             self.heshe = "she"
         else:
-            #give them nonbinary pronouns
-            #you friggin sjvv ree
+            #give them they/them pronouns
             self.hisher = "their"
-            self.himer = "them"
+            self.himher = "them"
             self.heshe = "they"
 
 def initialize():
-    global tributes, numOfDistricts
-    numOfDistricts = int(input("Enter number of districts\n"))
+    global tributes, numOfDistricts, dead, deadthisday, day
+    tributes = []
+    dead = []
+    deadthisday = []
+    day = 1
+    
+    while True:
+        try:
+            numOfDistricts = int(input("Enter number of districts\n"))
+            break
+        except ValueError:
+            print("Number of districts must be a number\n")
     temp = ""#dummy variable
     i=1
+
+    print("\nName your tributes with the following format:\n name gender\ne.g. Jane Doe f\n")
     #while i is less than or equal to double the number of districts (two tributes for each district)
     while i<=(numOfDistricts*2):
         #"Name tribute number" whatever number we're on
-        temp = input("Name tribute #{}\n".format(i))
+        temp = ""
+        while True:
+            temp = input("Name tribute #{}\n".format(i))
+            if (len(temp) >= 3):
+                break
+            else:
+                print("Name must be at least 3 characters\n")
 
         #create a new tribute. temp is the name you entered.
         #What ceil(i/2) does is, since there's half as many districts as there
@@ -459,45 +476,52 @@ def Cannons():
     del deadthisday[:]
 
 #===========================================================================
-
-initialize()
-while len(tributes) != 1: #As long as there is more than 1 tribute remaining
-    Day() #Start a new day
-    input() 
-    if len(tributes) == 1: #If there is only 1 tribute left
-        break #Break the cycle, move on
-    Night() #Otherwise go on to night
-    Cannons() #List all the tributes who died
+#Game Loop
+while True:
+    initialize()
+    while len(tributes) != 1: #As long as there is more than 1 tribute remaining
+        Day() #Start a new day
+        input() 
+        if len(tributes) == 1: #If there is only 1 tribute left
+            break #Break the cycle, move on
+        Night() #Otherwise go on to night
+        Cannons() #List all the tributes who died
+        input()
+    print ("{} from District {} survived the Hunger Games!".format(tributes[0].name, tributes[0].district))
     input()
-print ("{} from District {} survived the Hunger Games!".format(tributes[0].name, tributes[0].district))
-input()
 
-print ("Order of death\n")
-for i in range(len(dead)): #For each dead tribute
-    print ("{}: {}".format((numOfDistricts*2)-i, dead[i].name)) #List the name and time of death of the tribute.
-    #Explanation of (numOfDistricts*2)-i
-    #numOfDistricts is the number of districts in the game.
-    #Since this is player defined we need a formula to find last place. It isn't necessarily 12.
-    #So The total number of districts is last place. Then it multiplies it by 2 to get the number of tributes.
-    # i is the current position of this function in the array. The farther along it is, the higher the position of the tribute, so the position and ranking have an inverse relationship.
-input()
-print ("Kills\n")
-for i in range(len(dead)): #For each dead tribute
-    tributes.append(dead[i]) 
+    print ("Order of death\n")
+    for i in range(len(dead)): #For each dead tribute
+        print ("{}: {}".format((numOfDistricts*2)-i, dead[i].name)) #List the name and time of death of the tribute.
+        #Explanation of (numOfDistricts*2)-i
+        #numOfDistricts is the number of districts in the game.
+        #Since this is player defined we need a formula to find last place. It isn't necessarily 12.
+        #So The total number of districts is last place. Then it multiplies it by 2 to get the number of tributes.
+        # i is the current position of this function in the array. The farther along it is, the higher the position of the tribute, so the position and ranking have an inverse relationship.
+    input()
+    print ("Kills\n")
+    for i in range(len(dead)): #For each dead tribute
+        tributes.append(dead[i]) 
 
-#Sort the tributes by number of kills
-killorder = []
-while len(killorder) < (numOfDistricts * 2):
-    highest = 0
-    nextHighest = None
-    for i in range(len(tributes)):
-        if tributes[i].kills > highest:
-            highest = tributes[i].kills
-            nextHighest = tributes[i]
-        if nextHighest == None:
-            nextHighest = tributes[0]
-    tributes.remove(nextHighest)
-    killorder.append(nextHighest)
-    
-for i in range(len(killorder)):
-    print ("{} - {}".format(killorder[i].kills, killorder[i].name))
+    #Sort the tributes by number of kills
+    killorder = []
+    while len(killorder) < (numOfDistricts * 2):
+        highest = 0
+        nextHighest = None
+        for i in range(len(tributes)):
+            if tributes[i].kills > highest:
+                highest = tributes[i].kills
+                nextHighest = tributes[i]
+            if nextHighest == None:
+                nextHighest = tributes[0]
+        tributes.remove(nextHighest)
+        killorder.append(nextHighest)
+        
+    for i in range(len(killorder)):
+        print ("{} - {}".format(killorder[i].kills, killorder[i].name))
+
+    again = input("\nType 'yes' to play again; anything else to exit\n")
+    if (not again.lower().startswith('y')):
+        break
+    else:
+        print("\n"*10)
